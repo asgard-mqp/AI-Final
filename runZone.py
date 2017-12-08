@@ -32,12 +32,11 @@ def find_next_goal_location(goals,tiles):
            goals[3][0] == tile):#
             continue
         return tile
-    
 def AI(my_data, their_data,tiles_data,my_goals,their_goals,important_tiles):
     if my_data[1] > 0 : #have a goal
+        if my_data[0] in important_tiles[:-1]: #if im at scoring location
+            return 36
         if my_goals[my_data[1] - 1][1] >=8: #if my goal has 8 cones
-            if my_data[0] in important_tiles[:-1]: #if im at scoring location
-                return 36
             return find_next_goal_location(my_goals,important_tiles[:-1])
         else: #get cones
             if tiles_data[my_data[0]]>0: #if cones where I am
@@ -89,7 +88,7 @@ blue = []
 bigdic = {}
 total = 0
 
-num = 1000
+num = 100000
 for i in range(num):
     env.reset()
     state_list = []
@@ -105,9 +104,10 @@ for i in range(num):
                [state.goal_data[i] for i in range(4)],[state.goal_data[4 + i] for i in range(4)],\
                [30,31,24,25,12])
             action = random()            
-            if action < 0.3:
+            if action < 0.01:
                 choice = randint(0,35)
             pair_string = state.get_Key_Red(choice)
+            #print(pair_string)
             state_list.append(pair_string)
             state, reward, done, info = env.step(choice)
             total +=1
@@ -118,15 +118,15 @@ for i in range(num):
                [state.goal_data[4 + i] for i in range(4)],[state.goal_data[i] for i in range(4)],\
                [5,4,11,10,2])
             action = random()
-            if action < 0.3:
+            if action < 0.01:
                 choice = randint(0,35)
             state, reward, done, info = env.step(100 + choice)
-#        if(i%5 ==0):
+#        if(True or i%5 ==0):
 #            env.render(close=True)
 #            
 #            env.render()
-#            time.sleep(0.5)
-    #env.render() 
+#            time.sleep(0.3)
+#env.render() 
     won = 0
     lost = 0
     if reward[0] > reward[1]:
@@ -140,23 +140,26 @@ for i in range(num):
     red.append(reward[0])
     blue.append(reward[1])
     for state_pair in state_list:
-        if state_pair in bigdic:
-            old = bigdic[state_pair]
-            bigdic[state_pair] = [old[0] + won,old[1] + lost]
-        else:
-            bigdic[state_pair] = [won,lost]
+        if won or lost:
+            if state_pair in bigdic:
+                old = bigdic[state_pair]
+                bigdic[state_pair] = [old[0] + won,old[1] + lost]
+            else:
+                bigdic[state_pair] = [won,lost]
 elapsed_time = time.time() - start_time
 print(elapsed_time/num)
-print(elapsed_time)
-print(np.amax(red))
-print(np.amax(blue))
-print(np.average(red))
-print(np.average(blue))
-
+#print(elapsed_time)
+#print(np.amax(red))
+#print(np.amax(blue))
+#print(np.average(red))
+#print(np.average(blue))
+print(len(bigdic))
+print(total)
+print(len(bigdic)/total)
 from datetime import datetime
 now = datetime.now()
-print (now)
-np.save(str(now)+'.npy',bigdic)
+#print (now)
+np.save('new/'+str(now)+'.npy',bigdic)
 #env.render(close=True)
 #
 #env.render()

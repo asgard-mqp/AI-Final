@@ -13,7 +13,7 @@ biggerdic = {}
 import os
 import numpy as np
 
-files = os.listdir("../AI-Final")
+files = os.listdir("new")
 files.sort()
 
 total = 0
@@ -21,7 +21,7 @@ for file in files:
     if file.endswith(".npy") and not file.endswith("combine.npy"):
         
         #print(os.path.join("../AI-Final", file))
-        add = np.load(file).item()
+        add = np.load('new/'+file).item()
         last = file
         total += len(add)
         for state_pair in add.keys():
@@ -32,7 +32,7 @@ for file in files:
             else:
                 biggerdic[state_pair] = (add[state_pair][0],add[state_pair][1])
          
-np.save(last[:-4]+'-combine'+'.npy',biggerdic)
+np.save('new/'+last[:-4]+'-combine'+'.npy',biggerdic)
 
 print(len(biggerdic))
 print(total)
