@@ -105,7 +105,7 @@ for i in range(num):
                [30,31,24,25,12])
             action = random()            
             if action < 0.01:
-                choice = randint(0,35)
+                choice = randint(0,37)
             pair_string = state.get_Key_Red(choice)
             #print(pair_string)
             state_list.append(pair_string)
@@ -119,7 +119,7 @@ for i in range(num):
                [5,4,11,10,2])
             action = random()
             if action < 0.01:
-                choice = randint(0,35)
+                choice = randint(0,37)
             state, reward, done, info = env.step(100 + choice)
 #        if(True or i%5 ==0):
 #            env.render(close=True)
