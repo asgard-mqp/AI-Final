@@ -90,20 +90,23 @@ def evaluate(state,action):
     if key in Q:
         record = Q[key]
         percentage = record[0]/(record[0] + record[1])
-        #print('success')
+        print('known action ' +str(action) +' percentage ' + str(percentage))
+        if record[0] +record[1] <=5:
+           print('doesnt count')
+           return -1      
         return percentage
     else:
-       # print(action)
+#        print(action)
         return -1
 def greedy(state):
     values = []
-    return -1
     for i in range(38):
         values.append(evaluate(state,i))
     if(np.max(values) == -1):
         #print('shittttt')
+        print('no known actions')
         return -1
-    #print(np.argmax(values))
+    print(np.argmax(values))
     return np.argmax(values)
     
         
@@ -118,12 +121,12 @@ blue = []
 bigdic = {}
 total = 0
 
-num = 1000
+num = 1
 for i in range(num):
     env.reset()
     state_list = []
     state, reward, done, info = env.step(200) # fake action with no time penalty to get field state
-    for i in range(1000):
+    while not done:
     #    print('red time ' + str(state.red_data[2]))
     #    print('blue time ' + str(state.blue_data[2]))
         if done ==True:
