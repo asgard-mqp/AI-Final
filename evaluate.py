@@ -105,7 +105,7 @@ def greedy(state):
             values.append(evaluate(state,i))
         elif(i==36):
             values.append(evaluate(state,i))
-        elif(i==37 and state.tiles_data[state.red_data[0]]>0):
+        elif(i==37 and state.red_data[1] > 0 and state.tiles_data[state.red_data[0]]>0):
             values.append(evaluate(state,i)) #only consider pickup if valid
 
     if(np.max(values) == -1):
