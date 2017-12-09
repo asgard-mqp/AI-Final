@@ -23,6 +23,8 @@ for file in files:
         #print(os.path.join("../AI-Final", file))
         add = np.load('new/'+file).item()
         last = file
+        print(file)
+        print(len(biggerdic))
         total += len(add)
         for state_pair in add.keys():
             #print(state_pair)
