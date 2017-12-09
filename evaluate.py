@@ -101,7 +101,13 @@ def evaluate(state,action):
 def greedy(state):
     values = []
     for i in range(38):
-        values.append(evaluate(state,i))
+        if i <36 and not i == state.red_data[0]:#not going to where I am
+            values.append(evaluate(state,i))
+        elif(i==36):
+            values.append(evaluate(state,i))
+        elif(i==37 and state.tiles_data[state.red_data[0]]>0):
+            values.append(evaluate(state,i)) #only consider pickup if valid
+
     if(np.max(values) == -1):
         #print('shittttt')
         print('no known actions')
