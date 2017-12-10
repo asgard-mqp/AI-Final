@@ -90,9 +90,9 @@ def evaluate(state,action):
     if key in Q:
         record = Q[key]
         percentage = record[0]/(record[0] + record[1])
-        print('known action ' +str(action) +' percentage ' + str(percentage))
-        if record[0] +record[1] <=5:
-           print('doesnt count')
+#        print('known action ' +str(action) +' percentage ' + str(percentage)+' based on record ' + str(record))
+        if record[0] +record[1] <=100:
+#           print('doesnt count')
            return -1      
         return percentage
     else:
@@ -100,6 +100,7 @@ def evaluate(state,action):
         return -1
 def greedy(state):
     values = []
+#    print(state.get_Key_Red(17))
     for i in range(38):
         if i <36 and not i == state.red_data[0]:#not going to where I am
             values.append(evaluate(state,i))
@@ -107,12 +108,14 @@ def greedy(state):
             values.append(evaluate(state,i))
         elif(i==37 and state.red_data[1] > 0 and state.tile_data[state.red_data[0]]>0):
             values.append(evaluate(state,i)) #only consider pickup if valid
-
+        else:
+            values.append(-1)
     if(np.max(values) == -1):
         #print('shittttt')
-        print('no known actions')
+#        print('no known actions')
         return -1
-    print(np.argmax(values))
+#    print(values)
+#    print(np.argmax(values))
     return np.argmax(values)
     
         
@@ -127,7 +130,7 @@ blue = []
 bigdic = {}
 total = 0
 
-num = 1
+num = 10000
 for i in range(num):
     env.reset()
     state_list = []
