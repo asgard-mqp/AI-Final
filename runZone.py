@@ -32,7 +32,7 @@ def find_next_goal_location(goals,tiles):
            goals[3][0] == tile):#
             continue
         return tile
-def AI(my_data, their_data,tiles_data,my_goals,their_goals,important_tiles):
+def AI(my_data, their_data,tiles_data,my_goals,their_goals,important_tiles,random_chance):
     if my_data[1] > 0 : #have a goal
         if my_data[0] in important_tiles[:-1]: #if im at scoring location
             return 36
@@ -56,6 +56,10 @@ def AI(my_data, their_data,tiles_data,my_goals,their_goals,important_tiles):
 #                    print('going to next goal location')
                     return find_next_goal_location(my_goals,important_tiles[:-1])
                 bestLocation = locations[np.argmin(distance)]
+                if(random() < random_chance): #sometimes choose second best
+                    distance[np.argmin(distance)] = 10
+                    bestLocation = locations[np.argmin(distance)]
+                
 #                print(bestLocation)
                 return(bestLocation)
     else:#dont have goal
@@ -88,7 +92,7 @@ blue = []
 bigdic = {}
 total = 0
 
-num = 100000
+num = 1000
 for i in range(num):
     env.reset()
     state_list = []
@@ -102,7 +106,7 @@ for i in range(num):
             #print('reds turn')
             choice = AI(state.red_data,state.blue_data,state.tile_data,\
                [state.goal_data[i] for i in range(4)],[state.goal_data[4 + i] for i in range(4)],\
-               [30,31,24,25,12])
+               [30,31,24,25,12],0.5)
             action = random()            
             if action < 0.01:
                 choice = randint(0,37)
@@ -116,7 +120,7 @@ for i in range(num):
     
             choice = AI(state.blue_data,state.red_data,state.tile_data,\
                [state.goal_data[4 + i] for i in range(4)],[state.goal_data[i] for i in range(4)],\
-               [5,4,11,10,2])
+               [5,4,11,10,2],0.00)
             action = random()
             if action < 0.01:
                 choice = randint(0,37)
