@@ -92,7 +92,7 @@ blue = []
 bigdic = {}
 total = 0
 
-num = 1000
+num = 100000
 for i in range(num):
     env.reset()
     state_list = []

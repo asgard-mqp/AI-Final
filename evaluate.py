@@ -81,9 +81,12 @@ def AI(my_data, their_data,tiles_data,my_goals,their_goals,important_tiles):
 import os
 
 files = os.listdir("new")
+files.sort()
 for file in files[::-1]:
     if file.endswith("combine.npy"):
-        Q = np.load('new/'+file).item()
+        toLoad = file        
+print(toLoad)
+Q = np.load('new/'+toLoad).item()
 print(len(Q))
 def evaluate(state,action):
     key = state.get_Key_Red(action)
@@ -91,7 +94,7 @@ def evaluate(state,action):
         record = Q[key]
         percentage = record[0]/(record[0] + record[1])
 #        print('known action ' +str(action) +' percentage ' + str(percentage)+' based on record ' + str(record))
-        if record[0] +record[1] <=100:
+        if record[0] +record[1] <=10:
 #           print('doesnt count')
            return -1      
         return percentage
