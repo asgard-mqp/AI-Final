@@ -82,13 +82,18 @@ import os
 
 files = os.listdir("new")
 files.sort()
-for file in files[::-1]:
+for file in files:
     if file.endswith("combine.npy"):
         toLoad = file        
 print(toLoad)
 Q = np.load('new/'+toLoad).item()
 print(len(Q))
-def getQ(state,action):
+def getQ(state,action,simple):
+#    simplePercent =  simple_PercentageQ(state,action)
+#    complicated = complicated_PercentageQ(state,action)
+#    print('simple ' +str(simplePercent) + ' complicated ' + str(complicated))
+    if(simple):
+        return simple_PercentageQ(state,action)
     return complicated_PercentageQ(state,action)
 def simple_PercentageQ(state,action):
     key = state.get_Key_Red(action)
@@ -96,7 +101,7 @@ def simple_PercentageQ(state,action):
         record = Q[key]
         percentage = record[0]/(record[0] + record[1])
 #        print('known action ' +str(action) +' percentage ' + str(percentage)+' based on record ' + str(record))
-        if record[0] +record[1] <=10:
+        if record[0] +record[1] <=300:
 #           print('doesnt count')
            return -1      
         return percentage
@@ -110,29 +115,28 @@ def complicated_PercentageQ(state,action):
         wins = record[0]
         losses = record[1]
         if wins is 0 or losses is 0:#interval breaks
-            wins +=1
-            losses +=1 #hack to fix problem
+            return -1
         total = wins + losses
-        confidence_interval = 1.96*math.sqrt(wins * losses / (total * total * total))
-        print('wins ' + str(wins) + ' losses ' + str(losses) + ' error ' + str(confidence_interval))
+        confidence_interval = 3*math.sqrt(wins * losses / (total * total * total))
         percentage = record[0]/(record[0] + record[1])
+#        print('action ' +str(action)+' score ' + str(percentage - confidence_interval) + ' wins ' + str(wins) + ' losses ' + str(losses) + ' error ' + str(confidence_interval))
         return percentage - confidence_interval
     else:
 #        print(action)
         return -1
-def greedy(state):
+def greedy(state,simple):
     values = []
 #    print(state.get_Key_Red(17))
     for i in range(38):
         if i <36 and not i == state.red_data[0]:#not going to where I am
-            values.append(getQ(state,i))
+            values.append(getQ(state,i,simple))
         elif(i==36):
-            values.append(getQ(state,i))
+            values.append(getQ(state,i,simple))
         elif(i==37 and state.red_data[1] > 0 and state.tile_data[state.red_data[0]]>0):
-            values.append(getQ(state,i)) #only consider pickup if valid
+            values.append(getQ(state,i,simple)) #only consider pickup if valid
         else:
             values.append(-1)
-    if(np.max(values) <= 0):
+    if(len(values) is 0 or np.max(values) <= 0):
         #print('shittttt')
 #        print('no known actions')
         return -1
@@ -152,7 +156,7 @@ blue = []
 bigdic = {}
 total = 0
 
-num = 10000
+num = 1000
 for i in range(num):
     env.reset()
     state_list = []
@@ -164,8 +168,11 @@ for i in range(num):
             break
         if state.blue_data[2] > state.red_data[2]:
             #print('reds turn')
-
-            choice = greedy(state)
+#            print(' ')
+#            print(' ')
+            choice = greedy(state,False) 
+ #           if choice != greedy(state,True):
+ #              break
             if choice == -1:
                 choice = AI(state.red_data,state.blue_data,state.tile_data,\
                 [state.goal_data[i] for i in range(4)],[state.goal_data[4 + i] for i in range(4)],\
@@ -215,8 +222,8 @@ print(np.amax(blue))
 print(np.average(red))
 print(np.average(blue))
 print(red_wins/(red_wins + blue_wins))
-from datetime import datetime
-now = datetime.now()
+#from datetime import datetime
+#now = datetime.now()
 #print (now)
 #env.render(close=True)
 #
