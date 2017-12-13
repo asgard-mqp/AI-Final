@@ -109,6 +109,9 @@ def complicated_PercentageQ(state,action):
         record = Q[key]
         wins = record[0]
         losses = record[1]
+        if wins is 0 or losses is 0:#interval breaks
+            wins +=1
+            losses +=1 #hack to fix problem
         total = wins + losses
         confidence_interval = 1.96*math.sqrt(wins * losses / (total * total * total))
         print('wins ' + str(wins) + ' losses ' + str(losses) + ' error ' + str(confidence_interval))
