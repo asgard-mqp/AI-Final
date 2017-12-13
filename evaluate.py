@@ -88,7 +88,9 @@ for file in files[::-1]:
 print(toLoad)
 Q = np.load('new/'+toLoad).item()
 print(len(Q))
-def evaluate(state,action):
+def getQ(state,action):
+    return complicated_PercentageQ(state,action)
+def simple_PercentageQ(state,action):
     key = state.get_Key_Red(action)
     if key in Q:
         record = Q[key]
@@ -101,19 +103,33 @@ def evaluate(state,action):
     else:
 #        print(action)
         return -1
+def complicated_PercentageQ(state,action):
+    key = state.get_Key_Red(action)
+    if key in Q:
+        record = Q[key]
+        wins = record[0]
+        losses = record[1]
+        total = wins + losses
+        confidence_interval = 1.96*math.sqrt(wins * losses / (total * total * total))
+        print('wins ' + str(wins) + ' losses ' + str(losses) + ' error ' + str(confidence_interval))
+        percentage = record[0]/(record[0] + record[1])
+        return percentage - confidence_interval
+    else:
+#        print(action)
+        return -1
 def greedy(state):
     values = []
 #    print(state.get_Key_Red(17))
     for i in range(38):
         if i <36 and not i == state.red_data[0]:#not going to where I am
-            values.append(evaluate(state,i))
+            values.append(getQ(state,i))
         elif(i==36):
-            values.append(evaluate(state,i))
+            values.append(getQ(state,i))
         elif(i==37 and state.red_data[1] > 0 and state.tile_data[state.red_data[0]]>0):
-            values.append(evaluate(state,i)) #only consider pickup if valid
+            values.append(getQ(state,i)) #only consider pickup if valid
         else:
             values.append(-1)
-    if(np.max(values) == -1):
+    if(np.max(values) <= 0):
         #print('shittttt')
 #        print('no known actions')
         return -1
