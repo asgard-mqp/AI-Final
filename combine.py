@@ -34,7 +34,7 @@ for file in files:
                 biggerdic[state_pair] = (old[0] + add[state_pair][0],old[1] + add[state_pair][1])
             else:
                 biggerdic[state_pair] = (add[state_pair][0],add[state_pair][1])
-        if(realFiles%100 == 0):
+        if(realFiles%20 == 0):
             print('save after ' +str(realFiles) + ' files')
             np.save('new/'+str(realFiles/10)+'-combine'+'.npy',biggerdic)
 
