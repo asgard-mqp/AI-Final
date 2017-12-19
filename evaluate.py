@@ -119,7 +119,7 @@ def complicated_PercentageQ(state,action):
         total = wins + losses
         confidence_interval = 3*math.sqrt(wins * losses / (total * total * total))
         percentage = record[0]/(record[0] + record[1])
-#        print('action ' +str(action)+' score ' + str(percentage - confidence_interval) + ' wins ' + str(wins) + ' losses ' + str(losses) + ' error ' + str(confidence_interval))
+#        print('action ' +str(action)+' score ' + str(percentage - confidence_interval) + ' wins ' + str(wins) + ' losses ' + str(losses))# + ' error ' + str(confidence_interval))
         return percentage - confidence_interval
     else:
 #        print(action)
@@ -170,7 +170,7 @@ for i in range(num):
             #print('reds turn')
 #            print(' ')
 #            print(' ')
-            choice = greedy(state,False) 
+            choice = greedy(state,True) 
  #           if choice != greedy(state,True):
  #              break
             if choice == -1:
