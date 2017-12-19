@@ -17,9 +17,10 @@ files = os.listdir("new")
 files.sort()
 
 total = 0
+realFiles = 0
 for file in files:
     if file.endswith(".npy") and not file.endswith("combine.npy"):
-        
+        realFiles +=1
         #print(os.path.join("../AI-Final", file))
         add = np.load('new/'+file).item()
         last = file
@@ -33,7 +34,11 @@ for file in files:
                 biggerdic[state_pair] = (old[0] + add[state_pair][0],old[1] + add[state_pair][1])
             else:
                 biggerdic[state_pair] = (add[state_pair][0],add[state_pair][1])
-         
+        if(realFiles%100 == 0):
+            print('save after ' +str(realFiles) + ' files')
+            np.save('new/'+str(realFiles/10)+'-combine'+'.npy',biggerdic)
+
+        
 np.save('new/'+last[:-4]+'-combine'+'.npy',biggerdic)
 
 print(len(biggerdic))
